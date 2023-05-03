@@ -43,20 +43,24 @@ template <typename T> bintree<T> *create_tree(std::vector<T> data) {
     return head;
 }
 
+template <typename T> T &last(std::vector<T> &data) {
+    return data.at(data.size() - 1);
+}
+
 template <typename T, Direction D1, Direction D2>
 bintree<T> *find_path(insertion_path<T> path) {
     if (path.pointers.size() == 0)
         return nullptr;
-    if (path.directions.at(path.directions.size() - 1) == D1) {
-        return path.pointers.at(path.pointers.size() - 1);
+    if (last(path.directions) == D1) {
+        return last(path.pointers);
     } else {
-        while (path.directions.at(path.directions.size() - 1) == D2) {
+        while (last(path.directions) == D2) {
             path.directions.pop_back();
             path.pointers.pop_back();
             if (path.directions.size() == 0)
                 return nullptr;
         }
-        return path.pointers.at(path.pointers.size() - 1);
+        return last(path.pointers);
     }
 }
 
@@ -117,15 +121,15 @@ void in_order_traverse(bintree<T> *tree, std::function<void(T)> op) {
 }
 
 template <typename T> void in_order_print(bintree<T> *tree) {
-    auto op = [](T data) { std::cout << data << ' '; };
-    in_order_traverse(tree, std::function<void(T)>(op));
+    std::function<void(T)> op = [](T data) { std::cout << data << ' '; };
+    in_order_traverse(tree, op);
     std::cout << '\n';
 }
 
 template <typename T> std::vector<T> in_order_data(bintree<T> *tree) {
     auto data_ = std::vector<T>();
-    auto op = [&](T data) { data_.push_back(data); };
-    in_order_traverse(tree, std::function<void(T)>(op));
+    std::function<void(T)> op = [&](T data) { data_.push_back(data); };
+    in_order_traverse(tree, op);
     return data_;
 }
 
